@@ -1,2 +1,41 @@
-# Environment variables
+# =====================================
+# Root env
+# =====================================
 .env
+
+# =====================================
+# Frontend
+# =====================================
+frontend/logs
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
+
+frontend/node_modules
+frontend/dist
+frontend/dist-ssr
+frontend/*.local
+
+# =====================================
+# Backend
+# =====================================
+backend/node_modules
+backend/dist
+backend/*.log
+backend/*.local
+
+# =====================================
+# OS / IDE
+# =====================================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
