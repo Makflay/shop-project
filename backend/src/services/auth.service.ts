@@ -1,7 +1,7 @@
 import User from "../models/UserShema";
 import { IUser } from "../models/IUser";
 import jwt from "jsonwebtoken";
-//import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { ILoginData } from "./ILoginData";
 import { IRegisterData } from "./IRegisterData";
 
@@ -29,6 +29,8 @@ export const loginUser = async (
   if (!isMatch) {
     throw new Error("Invalid email or password");
   }
-  const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
+    expiresIn: "1h",
+  });
   return { user, token };
 };
