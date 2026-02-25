@@ -82,6 +82,10 @@ shop-project/
 │ │ │ └─ useAuth.ts
 │ │ │ └─ useCart.ts
 │ │ │
+│ │ ├─ types/
+│ │ │ └─ auth.ts
+│ │ │ └─
+│ │ │
 │ │ ├─ styles/
 │ │ │ └─ global.css / tailwind.config.js
 │ │ │
