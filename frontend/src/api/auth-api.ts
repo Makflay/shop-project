@@ -4,7 +4,7 @@ import type { ILoginData } from "../types/auth";
 export const loginApi = (
   email: string,
   password: string,
-): Promise<{ data: ILoginData }> => {
+): Promise<ILoginData> => {
   return apiClient("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -13,10 +13,11 @@ export const loginApi = (
 
 export const registerApi = (
   email: string,
+  name: string,
   password: string,
-): Promise<{ data: ILoginData }> => {
+): Promise<ILoginData> => {
   return apiClient("/auth/register", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, name, password }),
   });
 };

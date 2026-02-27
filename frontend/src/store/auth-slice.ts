@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { loginApi, registerApi } from "../api/auth-api";
-import type { IAuthState } from "../types/auth";
+import type { IAuthState, ILoginData } from "../types/auth";
 
 const initialState: IAuthState = {
   user: null,
@@ -11,7 +12,8 @@ const initialState: IAuthState = {
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }: { email: string; password: string }) => {
-    const { data } = await loginApi(email, password);
+    const data = await loginApi(email, password);
+    console.log("Login response:", data);
     localStorage.setItem("token", data.token);
     return data;
   },
@@ -19,8 +21,18 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password }: { email: string; password: string }) => {
-    const { data } = await registerApi(email, password);
+  async ({
+    email,
+    name,
+    password,
+  }: {
+    email: string;
+    name: string;
+    password: string;
+  }) => {
+    const data = await registerApi(email, name, password);
+    console.log("Register response:", data);
+    localStorage.setItem("token", data.token);
     return data;
   },
 );
@@ -36,10 +48,13 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-    });
+    const setAuth = (state: IAuthState, action: PayloadAction<ILoginData>) => {
+      const { token, ...user } = action.payload;
+      state.user = user;
+      state.token = token;
+    };
+    builder.addCase(login.fulfilled, setAuth);
+    builder.addCase(register.fulfilled, setAuth);
   },
 });
 
