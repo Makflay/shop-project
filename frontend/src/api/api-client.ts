@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
+console.log("API URL:", API_URL);
 
 interface FetchOptions extends RequestInit {
   params?: Record<string, string>;
@@ -10,7 +11,7 @@ const apiClient = async (url: string, options: FetchOptions = {}) => {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
-    ...(token ? { Autorization: `Bearer ${token}` } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   let fullUrl = API_URL + url;
