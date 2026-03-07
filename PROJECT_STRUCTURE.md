@@ -62,6 +62,7 @@ shop-project/
 │ │ │ └─ ProductDetails.tsx
 │ │ │ └─ Cart.tsx
 │ │ │ └─ Checkout.tsx
+│ │ │
 │ │ │ └─ Admin/
 │ │ │ └─ Dashboard.tsx
 │ │ │ └─ ProductCRUD.tsx
