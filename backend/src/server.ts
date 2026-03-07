@@ -1,6 +1,7 @@
-import dotenv from "dotenv";
-import path from "path";
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+// import dotenv from "dotenv";
+// import path from "path";
+// dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+import "./config/env";
 import app from "./app";
 import { connectDB } from "./config/db";
 import { seedAdmin } from "./config/seed.admin";
