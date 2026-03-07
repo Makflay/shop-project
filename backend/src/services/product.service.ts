@@ -1,8 +1,8 @@
-import { Product } from "../models/product.model";
-import { IProduct } from "../models/IProduct";
+import Product from "../models/product.model";
+import * as productTypes from "../types/products.type";
 
 export class ProductService {
-  static async createProduct(data: Partial<IProduct>) {
+  static async createProduct(data: Partial<productTypes.IProduct>) {
     return Product.create(data);
   }
 
@@ -14,7 +14,7 @@ export class ProductService {
     return Product.findById(id);
   }
 
-  static updateProduct(id: string, data: Partial<IProduct>) {
+  static updateProduct(id: string, data: Partial<productTypes.IProduct>) {
     return Product.findByIdAndUpdate(id, data, { new: true });
   }
 

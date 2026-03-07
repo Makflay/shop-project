@@ -1,17 +1,16 @@
 import { Schema, model } from "mongoose";
-import { IOrderItem } from "./IOrderItem";
-import { IOrder } from "./IOrder";
+import * as ordertTypes from "../types/orders.type";
 
-const orderItemSchema = new Schema<IOrderItem>(
+const orderItemSchema = new Schema<ordertTypes.IOrderItem>(
   {
-    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
   },
   { _id: false },
 );
 
-const orderSchema = new Schema<IOrder>(
+const orderSchema = new Schema<ordertTypes.IOrder>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: [orderItemSchema],
@@ -20,4 +19,5 @@ const orderSchema = new Schema<IOrder>(
   { timestamps: true },
 );
 
-export const Order = model<IOrder>("Order", orderSchema);
+const Order = model<ordertTypes.IOrder>("Order", orderSchema);
+export default Order;
