@@ -12,6 +12,11 @@ export interface ILoginData extends IUser {
   token: string;
 }
 
+export interface ILoginResponse {
+  success: boolean;
+  data: ILoginData;
+}
+
 export interface IAuthState {
   user: IUser | null;
   token: string | null;
