@@ -1,64 +1,87 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { ProductService } from "../services/product.service";
+import { successResponse, errorResponse } from "../utils/api.response";
 
-export class ProductController {
-  static async createProduct(req: Request, res: Response, next: NextFunction) {
-    try {
-      const product = await ProductService.createProduct(req.body);
-      res.status(201).json(product);
-    } catch (error) {
-      next(error);
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    if (
+      !["Electronics", "Clothes", "Books", "Home", "Sports"].includes(
+        req.body.category,
+      )
+    ) {
+      return errorResponse(
+        res,
+        "Category must be one of Electronics, Clothes, Books, Home, Sports",
+        400,
+      );
     }
+
+    const product = await ProductService.createProduct(req.body);
+    return successResponse(res, product, 201, "Product created");
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await ProductService.getAllProducts();
+    return successResponse(res, products);
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const getProductById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id || Array.isArray(id)) {
+    return errorResponse(res, "Product ID is required", 400);
   }
 
-  static async getAllProducts(req: Request, res: Response, next: NextFunction) {
-    try {
-      const products = await ProductService.getAllProducts();
-      res.json(products);
-    } catch (error) {
-      next(error);
-    }
+  try {
+    const product = await ProductService.getProductById(id);
+    return successResponse(res, product);
+  } catch (error: any) {
+    return errorResponse(res, error.message, 404);
+  }
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id || Array.isArray(id)) {
+    return errorResponse(res, "Product ID is required", 400);
   }
 
-  static async getProductById(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ message: "Product ID is required" });
-    }
-
-    try {
-      const product = await ProductService.getProductById(id);
-      res.json(product);
-    } catch (error) {
-      next(error);
-    }
+  if (
+    !["Electronics", "Clothes", "Books", "Home", "Sports"].includes(
+      req.body.category,
+    )
+  ) {
+    return errorResponse(
+      res,
+      "Category must be one of Electronics, Clothes, Books, Home, Sports",
+      400,
+    );
   }
 
-  static async updateProduct(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ message: "Product ID is required" });
-    }
+  try {
+    const updatedProduct = await ProductService.updateProduct(id, req.body);
+    return successResponse(res, updatedProduct, 200, "Product updated");
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
 
-    try {
-      const updatedProduct = await ProductService.updateProduct(id, req.body);
-      res.json(updatedProduct);
-    } catch (error) {
-      next(error);
-    }
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id || Array.isArray(id)) {
+    return errorResponse(res, "Product ID is required", 400);
   }
 
-  static async deleteProduct(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    if (!id || Array.isArray(id)) {
-      return res.status(400).json({ message: "Product ID is required" });
-    }
-
-    try {
-      await ProductService.deleteProduct(id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+  try {
+    await ProductService.deleteProduct(id);
+    return successResponse(res, null, 200, "Product deleted");
+  } catch (error: any) {
+    return errorResponse(res, error.message);
   }
-}
+};
