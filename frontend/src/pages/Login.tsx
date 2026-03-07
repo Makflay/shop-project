@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; //useNavigate
+import { Link, useNavigate } from "react-router-dom"; //
 import { useAuth } from "../hooks/useAuth";
 import { validateEmail, validatePassword } from "../utils/validators";
 
@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/redirect");
     } catch {
       setError("Login failed. Please check your credentials and try again.");
     }
@@ -55,6 +55,9 @@ const Login = () => {
       </form>
       <p>
         Don't have an account? <Link to="/register">Register here</Link>.
+      </p>
+      <p>
+        Back to the shop <Link to="/products">Shop</Link>
       </p>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
   validateEmail,
@@ -34,7 +34,7 @@ const Register = () => {
 
     try {
       await register(email, name, password);
-      navigate("/");
+      navigate("/redirect");
     } catch {
       setError("Registration failed. Please try again.");
     }
@@ -70,6 +70,9 @@ const Register = () => {
       </form>
       <p>
         Already have an account? <Link to="/login">Login here</Link>.
+      </p>
+      <p>
+        Back to the shop <Link to="/products">Shop</Link>
       </p>
     </div>
   );
