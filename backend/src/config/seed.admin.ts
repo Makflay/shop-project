@@ -1,4 +1,4 @@
-import User from "../models/UserShema";
+import User from "../models/user.model";
 
 export const seedAdmin = async () => {
   try {
