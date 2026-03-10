@@ -1,9 +1,12 @@
 import { Document, Types } from "mongoose";
 
+export type OrderStatus = "progress" | "pending";
+
 export interface IOrder extends Document {
   user: Types.ObjectId;
   items: IOrderItem[];
   totalAmount: number;
+  status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
 }

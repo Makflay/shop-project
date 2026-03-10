@@ -15,6 +15,11 @@ const orderSchema = new Schema<ordertTypes.IOrder>(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: [orderItemSchema],
     totalAmount: { type: Number, required: true, min: 0 },
+    status: {
+      type: String,
+      enum: ["progress", "pending"],
+      default: "progress",
+    },
   },
   { timestamps: true },
 );

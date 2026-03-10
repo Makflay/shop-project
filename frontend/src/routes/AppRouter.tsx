@@ -21,6 +21,7 @@ import Dashboard from "../pages/admin/Dashboard";
 import ProductCRUD from "../pages/admin/ProductCRUD";
 import ProductList from "../pages/user/ProductList";
 import ProductDetails from "../pages/user/ProductDetails";
+import Cart from "../pages/user/Cart";
 
 interface IProtectedRoute {
   children?: JSX.Element;
@@ -121,7 +122,7 @@ const AppRouter = () => {
           {/* User routes */}
           <Route element={<ProtectedRoute roles={["user"]} />}>
             <Route path="/" element={<Home />} />
-            <Route path="/cart" element={<div>Cart Page</div>} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<div>Orders Page</div>} />
           </Route>
 

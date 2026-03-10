@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/product-slice";
+import { addToCartThunk } from "../../store/cart-slice";
 import type { IProduct } from "../../types/product";
 
 const categories = ["Electronics", "Clothes", "Books", "Home", "Sports"];
@@ -23,7 +24,7 @@ const ProductList = () => {
 
   const handleAddToCart = (product: IProduct) => {
     console.log("Add to card", product);
-    //dispatch action cart
+    dispatch(addToCartThunk({ productId: product._id, quantity: 1 }));
   };
 
   const filteredProducts = selectedCategory

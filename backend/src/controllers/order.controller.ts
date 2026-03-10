@@ -2,23 +2,6 @@ import { Request, Response } from "express";
 import * as orderService from "../services/order.service";
 import { successResponse, errorResponse } from "../utils/api.response";
 
-export const createOrder = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, "Unauthorized", 401);
-    }
-
-    const order = await orderService.createOrder({
-      userId,
-      items: req.body.items,
-    });
-    return successResponse(res, order, 201, "Order created");
-  } catch (error: any) {
-    return errorResponse(res, error.massage);
-  }
-};
-
 export const getMyOrders = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
@@ -32,40 +15,95 @@ export const getMyOrders = async (req: Request, res: Response) => {
   }
 };
 
-// export const getOrderById = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   if (!id || Array.isArray(id)) {
-//     //return res.status(400).json({ message: "Order ID is required" });
-//     return errorResponse(res, "Order ID is required", 400);
-//   }
-
-//   try {
-//     const order = await orderService.getOrderById(id);
-//     //res.json(order);
-//     return successResponse(res, order);
-//   } catch (error: any) {
-//     return errorResponse(res, error.message);
-//   }
-// };
-
-export const updateOrder = async (req: Request, res: Response) => {
+export const getProgressOrder = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { id } = req.params;
+    if (!userId) {
+      return errorResponse(res, "Unauthorized", 401);
+    }
+    const order = await orderService.getOrCreateProgressOrder(userId);
+    return successResponse(res, order);
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const addProductToCart = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { productId, quantity } = req.body;
+
+    if (!userId) {
+      return errorResponse(res, "Unathorized", 401);
+    }
+
+    if (!productId || !quantity) {
+      return errorResponse(res, "ProductId and quantity are required", 400);
+    }
+
+    const order = await orderService.addProductToOrder(
+      userId,
+      productId,
+      quantity,
+    );
+    return successResponse(res, order, 200, "Product added to cart");
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const removeProductFromCart = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { productId } = req.params;
 
     if (!userId) {
       return errorResponse(res, "Unauthorized", 401);
     }
 
-    if (Array.isArray(id)) {
+    if (Array.isArray(productId)) {
       return errorResponse(res, "Invalid order ID", 400);
     }
 
-    if (!id) {
+    if (!productId) {
       return errorResponse(res, "Order ID is required", 400);
     }
 
-    const order = await orderService.updateOrder(id, userId, req.body);
+    const order = await orderService.removeProductFromOrder(userId, productId);
+
+    return successResponse(res, order, 200, "Order deleted");
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+};
+
+export const updateOrder = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { productId } = req.params;
+    const { quantity } = req.body;
+
+    if (!userId) {
+      return errorResponse(res, "Unauthorized", 401);
+    }
+
+    if (Array.isArray(productId)) {
+      return errorResponse(res, "Invalid order ID", 400);
+    }
+
+    if (!productId) {
+      return errorResponse(res, "Order ID is required", 400);
+    }
+
+    if (!quantity) {
+      return errorResponse(res, "Quantity is required", 400);
+    }
+
+    const order = await orderService.updateProductQuantity(
+      userId,
+      productId,
+      quantity,
+    );
 
     return successResponse(res, order, 200, "Order updated");
   } catch (error: any) {
@@ -73,27 +111,17 @@ export const updateOrder = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteOrder = async (req: Request, res: Response) => {
+export const confirmOrder = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { id } = req.params;
-
     if (!userId) {
       return errorResponse(res, "Unauthorized", 401);
     }
 
-    if (Array.isArray(id)) {
-      return errorResponse(res, "Invalid order ID", 400);
-    }
+    const order = await orderService.confirmOrder(userId);
 
-    if (!id) {
-      return errorResponse(res, "Order ID is required", 400);
-    }
-
-    await orderService.deleteOrder(id, userId);
-
-    return successResponse(res, null, 200, "Order deleted");
+    return successResponse(res, order, 201, "Order created");
   } catch (error: any) {
-    return errorResponse(res, error.message);
+    return errorResponse(res, error.massage);
   }
 };
