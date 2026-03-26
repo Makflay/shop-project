@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; //
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
+
+import { Container, AuthCard, FormBox, LinksBox } from "./auth-styles";
 import { useAuth } from "../hooks/useAuth";
 import { validateEmail, validatePassword } from "../utils/validators";
 
@@ -32,34 +40,53 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <Container>
+      <AuthCard>
+        <Typography variant="h4">Login</Typography>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-      <p>
-        Don't have an account? <Link to="/register">Register here</Link>.
-      </p>
-      <p>
-        Back to the shop <Link to="/products">Shop</Link>
-      </p>
-    </div>
+        <FormBox onSubmit={handleSubmit}>
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            size="small"
+            fullWidth
+          />
+
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            size="small"
+            fullWidth
+          />
+
+          {error && <Alert severity="error">{error}</Alert>}
+
+          <Button type="submit" variant="contained" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+        </FormBox>
+
+        <LinksBox>
+          <Typography variant="body2">
+            Don't have an account?{" "}
+            <Link component={RouterLink} to="/register">
+              Register here
+            </Link>
+          </Typography>
+
+          <Typography variant="body2">
+            Back to the shop{" "}
+            <Link component={RouterLink} to="/products">
+              Shop
+            </Link>
+          </Typography>
+        </LinksBox>
+      </AuthCard>
+    </Container>
   );
 };
 
