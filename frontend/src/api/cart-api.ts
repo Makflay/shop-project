@@ -5,7 +5,7 @@ export const getCart = async (): Promise<ICart> => {
   const res = await apiClient("/orders/cart", {
     method: "GET",
   });
-
+  console.log("cart data", res.data);
   return res.data;
 };
 
@@ -25,7 +25,7 @@ export const updateCartItem = async (
   productId: string,
   quantity: number,
 ): Promise<ICart> => {
-  const res = await apiClient(`/orders/cart/update/${productId}`, {
+  const res = await apiClient(`/orders/cart/items/${productId}`, {
     method: "PATCH",
     body: JSON.stringify({ quantity }),
   });
@@ -34,7 +34,7 @@ export const updateCartItem = async (
 };
 
 export const removeCartItem = async (productId: string): Promise<ICart> => {
-  const res = await apiClient(`/orders/cart/remove/${productId}`, {
+  const res = await apiClient(`/orders/cart/items/${productId}`, {
     method: "DELETE",
   });
 

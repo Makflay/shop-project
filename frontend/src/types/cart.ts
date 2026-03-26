@@ -7,5 +7,5 @@ export interface ICartItem {
 
 export interface ICart {
   items: ICartItem[];
-  totalPrice: number;
+  totalAmount: number;
 }
