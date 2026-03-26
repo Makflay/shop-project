@@ -1,4 +1,6 @@
 import { useLocation } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import { StyledFooter } from "./footer-styles";
 
 const Footer = () => {
   const location = useLocation();
@@ -9,9 +11,11 @@ const Footer = () => {
   }
 
   return (
-    <footer>
-      <p>&copy; 2024 My Shop. All rights reserved.</p>
-    </footer>
+    <StyledFooter component="footer">
+      <Typography variant="body2">
+        &copy; 2026 My Shop. All rights reserved.
+      </Typography>
+    </StyledFooter>
   );
 };
 
