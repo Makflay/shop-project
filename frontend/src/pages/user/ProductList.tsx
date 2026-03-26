@@ -1,5 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import type { SelectChangeEvent } from "@mui/material/Select";
+import {
+  Container,
+  FilterBox,
+  ProductGrid,
+  ProductCard,
+  ActionBox,
+} from "./styles/product-list-styles";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/product-slice";
 import { addToCartThunk } from "../../store/cart-slice";
@@ -18,7 +33,7 @@ const ProductList = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const handleCategoryFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryFilter = (e: SelectChangeEvent<string>) => {
     setSelectedCategory(e.target.value);
   };
 
@@ -32,38 +47,69 @@ const ProductList = () => {
     : products;
 
   return (
-    <div>
-      <h2>Product List</h2>
-      <label>Filter by Category</label>
-      <select value={selectedCategory} onChange={handleCategoryFilter}>
-        <option value="">All</option>
-        {categories.map((i) => (
-          <option key={i} value={i}>
-            {i}
-          </option>
-        ))}
-      </select>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Product List
+      </Typography>
 
-      {loading && <p>Loading...</p>}
+      <FilterBox>
+        <FormControl size="small" sx={{ minWidth: 150 }}>
+          <InputLabel>Filter by Category</InputLabel>
+          <Select
+            value={selectedCategory}
+            label="Filter by Category"
+            onChange={handleCategoryFilter}
+          >
+            <MenuItem value="">All</MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat} value={cat}>
+                {cat}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </FilterBox>
 
-      <div>
+      {loading && <Typography>Loading...</Typography>}
+
+      <ProductGrid container spacing={2}>
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((i) => (
-            <div key={i._id}>
-              <h3>{i.name}</h3>
-              <p>{i.price}</p>
-              <p>{i.category}</p>
-              <Link to={`/product/${i._id}`}>View Details</Link>
-              {user?.role === "user" && (
-                <button onClick={() => handleAddToCart(i)}>Add to Card</button>
-              )}
-            </div>
+          filteredProducts.map((prod) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={prod._id}>
+              <ProductCard>
+                <Typography variant="h6">{prod.name}</Typography>
+                <Typography variant="body1">{prod.price} $</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {prod.category}
+                </Typography>
+
+                <ActionBox>
+                  <Button
+                    component={RouterLink}
+                    to={`/product/${prod._id}`}
+                    size="small"
+                    variant="outlined"
+                  >
+                    View Details
+                  </Button>
+                  {user?.role === "user" && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => handleAddToCart(prod)}
+                    >
+                      Add to Cart
+                    </Button>
+                  )}
+                </ActionBox>
+              </ProductCard>
+            </Grid>
           ))
         ) : (
-          <p>No products available</p>
+          <Typography>No products available</Typography>
         )}
-      </div>
-    </div>
+      </ProductGrid>
+    </Container>
   );
 };
 

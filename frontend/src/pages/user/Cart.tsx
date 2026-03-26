@@ -1,4 +1,13 @@
 import { useEffect } from "react";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import {
+  Container,
+  CartItemCard,
+  ItemInfo,
+  QuantityBox,
+  TotalBox,
+} from "./styles/cart-styles";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   fetchCart,
@@ -25,35 +34,73 @@ const Cart = () => {
     dispatch(updateCartItemThunk({ productId, quantity }));
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <Container>
+        <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
 
   return (
-    <div>
-      <h2>Your Cart</h2>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Your Cart
+      </Typography>
 
-      {cart?.items.length === 0 && <p>Cart is empty</p>}
+      {cart?.items.length === 0 && <Typography>Cart is empty</Typography>}
 
-      {cart?.items.map((i: ICartItem) => (
-        <div key={i.product._id}>
-          <h3>{i.product.name}</h3>
-          <p>Price {i.product.price}</p>
-          <p>Quantity {i.quantity}</p>
+      {cart?.items.map((item: ICartItem) => (
+        <CartItemCard key={item.product._id}>
+          <ItemInfo>
+            <Typography variant="h6">{item.product.name}</Typography>
+            <Typography variant="body2">
+              Price: {item.product.price} $
+            </Typography>
+            <Typography variant="body2">Quantity: {item.quantity}</Typography>
+          </ItemInfo>
 
-          <button
-            onClick={() => handleQuantityChange(i.product._id, i.quantity - 1)}
-          >
-            -
-          </button>
-          <button
-            onClick={() => handleQuantityChange(i.product._id, i.quantity + 1)}
-          >
-            +
-          </button>
-          <button onClick={() => handleRemove(i.product._id)}>Remove</button>
-        </div>
+          <QuantityBox>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() =>
+                handleQuantityChange(item.product._id, item.quantity - 1)
+              }
+            >
+              -
+            </Button>
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() =>
+                handleQuantityChange(item.product._id, item.quantity + 1)
+              }
+            >
+              +
+            </Button>
+
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => handleRemove(item.product._id)}
+            >
+              Remove
+            </Button>
+          </QuantityBox>
+        </CartItemCard>
       ))}
-      <h3>Total: {cart?.totalPrice}</h3>
-    </div>
+
+      {cart && (
+        <TotalBox>
+          <Typography variant="h6">
+            Total: {cart.totalAmount.toFixed(2)} $
+          </Typography>
+        </TotalBox>
+      )}
+    </Container>
   );
 };
 

@@ -1,7 +1,17 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import {
+  Container,
+  ProductCard,
+  InfoBox,
+  LinksBox,
+} from "./styles/product-details-styles";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/product-slice";
+import { addToCartThunk } from "../../store/cart-slice";
 import type { IProduct } from "../../types/product";
 
 const ProductDetails = () => {
@@ -20,22 +30,52 @@ const ProductDetails = () => {
 
   const handleAddToCard = (product: IProduct) => {
     console.log("Add to cart", product);
-    //dispatch action cart
+    dispatch(addToCartThunk({ productId: product._id, quantity: 1 }));
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!product) return <p>Product not found</p>;
+  if (loading) {
+    return (
+      <Container>
+        <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Container>
+        <Typography>Product not found</Typography>
+      </Container>
+    );
+  }
 
   return (
-    <div>
-      <h2>{product.name}</h2>
-      <p>Price: ${product.price}</p>
-      <p>Category: ${product.category}</p>
-      <p>Description: ${product.description}</p>
-      {user?.role === "user" && (
-        <button onClick={() => handleAddToCard(product)}>Add to Cart</button>
-      )}
-    </div>
+    <Container>
+      <ProductCard>
+        <Typography variant="h4">{product.name}</Typography>
+        <InfoBox>
+          <Typography variant="h6">Price: {product.price} $</Typography>
+          <Typography variant="body1" color="text.secondary">
+            Category: {product.category}
+          </Typography>
+          <Typography variant="body1">{product.description}</Typography>
+        </InfoBox>
+
+        {user?.role === "user" && (
+          <Button variant="contained" onClick={() => handleAddToCard(product)}>
+            Add to Cart
+          </Button>
+        )}
+        <LinksBox>
+          <Typography variant="body2">
+            Back to the shop{" "}
+            <Link component={RouterLink} to="/products">
+              Shop
+            </Link>
+          </Typography>
+        </LinksBox>
+      </ProductCard>
+    </Container>
   );
 };
 
