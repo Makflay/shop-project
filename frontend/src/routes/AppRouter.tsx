@@ -6,6 +6,7 @@ import {
   Navigate,
   Outlet,
 } from "react-router-dom";
+import { Toolbar } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import type { RootState } from "../store";
 import type { JSX } from "react/jsx-dev-runtime";
@@ -13,7 +14,6 @@ import { isTokenValid } from "../utils/is-token-valid";
 import { fetchCurrentUser } from "../store/auth-slice";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Home from "../pages/user/Home";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 //
@@ -25,8 +25,8 @@ import Cart from "../pages/user/Cart";
 
 interface IProtectedRoute {
   children?: JSX.Element;
-  roles?: string[]; // Список ролей, которым разрешен доступ
-  redirectByRole?: boolean; // Если true, делает авто-редирект по роли
+  roles?: string[];
+  redirectByRole?: boolean;
 }
 
 const ProtectedRoute = ({
@@ -94,6 +94,7 @@ const MainLayout = () => {
   return (
     <>
       <Header />
+      <Toolbar />
       <Outlet />
       <Footer />
     </>
@@ -121,7 +122,6 @@ const AppRouter = () => {
 
           {/* User routes */}
           <Route element={<ProtectedRoute roles={["user"]} />}>
-            <Route path="/" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<div>Orders Page</div>} />
           </Route>
