@@ -5,8 +5,6 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
   const res = await apiClient("/products", {
     method: "GET",
   });
-  console.log("res getAllProducts", res);
-  console.log("res.data getAllProducts", res.data);
   return res.data;
 };
 
