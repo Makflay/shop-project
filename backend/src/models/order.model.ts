@@ -3,7 +3,7 @@ import * as ordertTypes from "../types/orders.type";
 
 const orderItemSchema = new Schema<ordertTypes.IOrderItem>(
   {
-    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
   },

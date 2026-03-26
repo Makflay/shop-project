@@ -7,12 +7,7 @@ const router = Router();
 router.get("/", protect, orderController.getMyOrders);
 router.post("/confirm", protect, orderController.confirmOrder);
 router.get("/cart", protect, orderController.getProgressOrder);
-router.post(
-  "/cart/items",
-  protect,
-  validateCreateOrder,
-  orderController.addProductToCart,
-);
+router.post("/cart/add", protect, orderController.addProductToCart);
 router.patch("/cart/items/:id", protect, orderController.updateOrder);
 router.delete(
   "/cart/items/:id",

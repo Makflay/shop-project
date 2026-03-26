@@ -1,10 +1,10 @@
 import Order from "../models/order.model";
 import Product from "../models/product.model";
-import * as orderTypes from "../types/orders.type";
+//import * as orderTypes from "../types/orders.type";
 
 export const getUserOrders = async (userId: string) => {
   return Order.find({ user: userId })
-    .populate("items.productId")
+    .populate("items.product")
     .sort({ createdAt: -1 });
 };
 
@@ -12,7 +12,8 @@ export const getOrCreateProgressOrder = async (userId: string) => {
   let order = await Order.findOne({
     user: userId,
     status: "progress",
-  });
+  }).populate("items.product");
+  console.log("order", order);
 
   if (!order) {
     order = await Order.create({
@@ -42,9 +43,9 @@ export const addProductToOrder = async (
   }
 
   const order = await getOrCreateProgressOrder(userId);
-
+  console.log("order2", order);
   const item = order.items.find((i) => {
-    i.productId.equals(product._id);
+    i.product.equals(product._id);
   });
 
   if (item) {
@@ -57,7 +58,7 @@ export const addProductToOrder = async (
     item.quantity = newQuantity;
   } else {
     order.items.push({
-      productId: product._id,
+      product: product._id,
       quantity,
       price: product.price,
     });
@@ -80,17 +81,16 @@ export const removeProductFromOrder = async (
   const order = await Order.findOne({
     user: userId,
     status: "progress",
-  });
+  }).populate("items.product");
 
   if (!order) {
     throw new Error("Order not found");
   }
 
-  order.items = order.items.filter((i) => !i.productId.equals(productId));
+  order.items = order.items.filter((i) => !i.product.equals(productId));
 
-  order.totalAmount = order.items.reduce(
-    (sum, i) => sum + i.price * i.quantity,
-    0,
+  order.totalAmount = Number(
+    order.items.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2),
   );
 
   await order.save();
@@ -106,7 +106,7 @@ export const updateProductQuantity = async (
   const order = await Order.findOne({
     user: userId,
     status: "progress",
-  });
+  }).populate("items.product");
 
   if (!order) {
     throw new Error("Order not found");
@@ -122,16 +122,15 @@ export const updateProductQuantity = async (
     throw new Error("Not enough stock");
   }
 
-  const item = order.items.find((i) => i.productId.equals(productId));
+  const item = order.items.find((i) => i.product.equals(productId));
 
   if (!item) {
     throw new Error("Product not fount in order");
   }
 
   item.quantity = quantity;
-  order.totalAmount = order.items.reduce(
-    (sum, i) => sum + i.price * i.quantity,
-    0,
+  order.totalAmount = Number(
+    order.items.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2),
   );
 
   await order.save();

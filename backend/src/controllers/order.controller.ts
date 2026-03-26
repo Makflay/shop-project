@@ -33,6 +33,8 @@ export const addProductToCart = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     const { productId, quantity } = req.body;
 
+    console.log(productId, quantity);
+
     if (!userId) {
       return errorResponse(res, "Unathorized", 401);
     }
@@ -55,7 +57,7 @@ export const addProductToCart = async (req: Request, res: Response) => {
 export const removeProductFromCart = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
 
     if (!userId) {
       return errorResponse(res, "Unauthorized", 401);
@@ -80,8 +82,11 @@ export const removeProductFromCart = async (req: Request, res: Response) => {
 export const updateOrder = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
     const { quantity } = req.body;
+    console.log("req.params", req.params);
+    console.log("productId", productId);
+    console.log("quantity", quantity);
 
     if (!userId) {
       return errorResponse(res, "Unauthorized", 401);
